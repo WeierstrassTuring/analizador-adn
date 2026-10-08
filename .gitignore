@@ -1,4 +1,5 @@
 # DNA data files (PRIVATE — never commit real DNA data)
+aldo_adn.csv
 *.csv
 *.txt
 !requirements.txt
