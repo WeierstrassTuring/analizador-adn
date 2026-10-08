@@ -447,30 +447,28 @@ def render_curiosity_card(curiosity: dict) -> str:
     
     metric_label, status_text, progress, color = get_trait_metric_info(curiosity)
     badge = category_badge(category)
-    
-    return f"""
-    <div class="curiosity-card">
-        <div class="card-emoji">{emoji}</div>
-        {badge}
-        <div style="margin-top: 10px;">
-            <div class="card-title">{title}</div>
-            <div class="card-gene">{gene} · Genotipo: <span style="color:#e6edf3; font-weight:700;">{genotype}</span></div>
-            <div class="card-result">{result_text}</div>
-            
-            <div style="margin: 10px 0 8px 0; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
-                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; margin-bottom:4px;">
-                    <span style="color:#8b949e; font-weight:500;">📊 {metric_label}</span>
-                    <span style="color:{color}; font-weight:700;">{status_text}</span>
-                </div>
-                <div class="progress-container" style="margin:0; height:7px;">
-                    <div class="progress-bar" style="width: {progress}%; background-color: {color};"></div>
-                </div>
-            </div>
 
-            <div class="card-detail">{detail}</div>
-        </div>
-    </div>
-    """
+    return (
+        f'<div class="curiosity-card">'
+        f'<div class="card-emoji">{emoji}</div>'
+        f'{badge}'
+        f'<div style="margin-top: 10px;">'
+        f'<div class="card-title">{title}</div>'
+        f'<div class="card-gene">{gene} · Genotipo: <span style="color:#e6edf3; font-weight:700;">{genotype}</span></div>'
+        f'<div class="card-result">{result_text}</div>'
+        f'<div style="margin: 10px 0 8px 0; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">'
+        f'<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; margin-bottom:4px;">'
+        f'<span style="color:#8b949e; font-weight:500;">📊 {metric_label}</span>'
+        f'<span style="color:{color}; font-weight:700;">{status_text}</span>'
+        f'</div>'
+        f'<div class="progress-container" style="margin:0; height:7px;">'
+        f'<div class="progress-bar" style="width: {progress}%; background-color: {color};"></div>'
+        f'</div>'
+        f'</div>'
+        f'<div class="card-detail">{detail}</div>'
+        f'</div>'
+        f'</div>'
+    )
 
 PREVENTION_TIPS = {
     '8Q24': '🥦 Aumentar la fibra vegetal y verduras crucíferas; el cribado de colon a partir de los 45-50 años (test de sangre oculta en heces) previene pólipos tempranamente.',
