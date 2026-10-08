@@ -1524,6 +1524,195 @@ SNP_DATABASE = {
         'fun_fact': 'Los portadores del alelo A tienen exactamente la misma capacidad de perder peso mediante dieta y ejercicio que los portadores de alelos protectores. ¡La genética no impide perder grasa! 🏃'
     },
 
+    # ────────────────────────────────────────────────────────────────
+    # ONCOLOGÍA Y PREDISPOSICIÓN A CÁNCER (GWAS Y REPARACIÓN CELULAR)
+    # ────────────────────────────────────────────────────────────────
+
+    'rs6983267': {
+        'rsid': 'rs6983267',
+        'gene': '8q24.21 / MYC',
+        'category': 'Salud',
+        'subcategory': 'Oncología colorrectal y próstata',
+        'title': 'Susceptibilidad colorrectal y prostática (Locus 8q24)',
+        'description': (
+            'El locus 8q24.21 es una región potenciadora génica que regula el protooncogén MYC. '
+            'Es el biomarcador de riesgo poligénico más reproducido en estudios GWAS mundiales para cáncer de colon '
+            'y adenocarcinoma de próstata. El alelo G aumenta la afinidad del factor TCF4, modulando la proliferación epitelial.'
+        ),
+        'interpretations': {
+            'TT': {'result': 'Riesgo basal promedio (Locus 8q24)', 'emoji': '✅', 'detail': 'Dos alelos T basales. Riesgo relativo poblacional estándar para neoplasia colorrectal y prostática.'},
+            'GT': {'result': 'Riesgo relativo ligeramente aumentado (8q24)', 'emoji': '⚖️', 'detail': 'Portador de un alelo G (~1.2x riesgo relativo). Un estilo de vida rico en fibra vegetal y revisiones preventivas estándar (test de sangre oculta en heces a partir de los 45-50 años) son muy eficaces.'},
+            'GG': {'result': 'Mayor susceptibilidad en locus 8q24', 'emoji': '⚠️', 'detail': 'Dos alelos G (~1.4x riesgo relativo). No predice enfermedad de forma determinante, pero aconseja adherirse rigurosamente a las pautas de cribado de colon y dieta baja en carnes procesadas.'},
+        },
+        'fun_fact': 'El butirato producido por la fermentación de la fibra alimentaria por bacterias intestinales beneficiosas actúa como un modulador epigenético protector en las células del colon. 🥦'
+    },
+
+    'rs1042522': {
+        'rsid': 'rs1042522',
+        'gene': 'TP53',
+        'category': 'Salud',
+        'subcategory': 'Oncología celular',
+        'title': 'Guardián del genoma y apoptosis celular (TP53 Arg72Pro)',
+        'description': (
+            'El gen TP53 codifica la proteína p53, el supresor tumoral más importante del cuerpo ("el guardián del genoma"). '
+            'El polimorfismo Arg72Pro produce dos variantes funcionales: la isoforma Arginina (Arg72) induce la apoptosis celular '
+            'con mayor rapidez ante roturas del ADN, mientras que Prolina (Pro72) prioriza la parada celular transitoria para reparar el daño.'
+        ),
+        'interpretations': {
+            'CC': {'result': 'Variante Arg72 (Apoptosis rápida y eficiente)', 'emoji': '🛡️', 'detail': 'Homocigoto para Arginina (Arg/Arg). Las células con daño genómico severo son eliminadas velozmente mediante muerte celular programada.'},
+            'CG': {'result': 'Heterocigoto Arg72/Pro72 (Equilibrio fisiológico)', 'emoji': '⚖️', 'detail': 'Un alelo de apoptosis rápida y un alelo de reparación celular. Perfil fisiológico balanceado.'},
+            'GG': {'result': 'Variante Pro72 (Énfasis en reparación del ADN)', 'emoji': '🔬', 'detail': 'Homocigoto para Prolina (Pro/Pro). Favorece la reparación del ADN antes de inducir apoptosis celular.'},
+        },
+        'fun_fact': 'En zonas del planeta con alta radiación solar ultravioleta cercana al ecuador, la variante de apoptosis rápida (Arg72) es casi universal para destruir rápidamente células con daño solar. ☀️'
+    },
+
+    'rs2736098': {
+        'rsid': 'rs2736098',
+        'gene': 'TERT',
+        'category': 'Salud',
+        'subcategory': 'Oncología y telómeros',
+        'title': 'Mantenimiento de telómeros y longevidad celular (TERT)',
+        'description': (
+            'El gen TERT codifica la transcriptasa inversa de la telomerasa, encargada de mantener la longitud de los telómeros '
+            'en los extremos de los cromosomas. Variantes en TERT modulan el equilibrio entre senescencia celular y capacidad proliferativa.'
+        ),
+        'interpretations': {
+            'TT': {'result': 'Mantenimiento telomérico basal', 'emoji': '✅', 'detail': 'Función telomérica estándar. Riesgo basal promedio de susceptibilidad neoplásica en este locus.'},
+            'CT': {'result': 'Variante intermedia de mantenimiento telomérico', 'emoji': '⚖️', 'detail': 'Un alelo C. Actividad telomérica dentro de los parámetros fisiológicos estándar.'},
+            'CC': {'result': 'Mayor capacidad proliferativa (Locus TERT)', 'emoji': '🔬', 'detail': 'Dos alelos C. Asociado en estudios GWAS a mayor proliferación celular. Mantener hábitos antiinflamatorios y chequeos periódicos habituales.'},
+        },
+        'fun_fact': 'El ejercicio aeróbico regular, una dieta mediterránea y 7-8 horas de sueño profundo diario ayudan a mantener la longitud telomérica y la juventud biológica celular. 🏃'
+    },
+
+    'rs2981582': {
+        'rsid': 'rs2981582',
+        'gene': 'FGFR2',
+        'category': 'Salud',
+        'subcategory': 'Oncología mamaria',
+        'title': 'Susceptibilidad en tejido mamario (FGFR2)',
+        'description': (
+            'El receptor del factor de crecimiento de fibroblastos 2 (FGFR2) regula el crecimiento y diferenciación del epitelio mamario. '
+            'El alelo A en el intrón 2 es el marcador de riesgo poligénico más común identificado en estudios GWAS para susceptibilidad mamaria.'
+        ),
+        'interpretations': {
+            'GG': {'result': 'Riesgo basal en locus FGFR2', 'emoji': '✅', 'detail': 'Sin variantes de riesgo poligénico en FGFR2. Pautas habituales de mamografía y chequeo ginecológico recomendadas por edad.'},
+            'AG': {'result': 'Portador de 1 alelo de riesgo relativo (FGFR2)', 'emoji': '⚖️', 'detail': 'Un alelo A de susceptibilidad (~1.2x riesgo relativo modesto). No predice enfermedad de forma determinante; seguir cribados estándar.'},
+            'AA': {'result': 'Riesgo relativo moderado en locus FGFR2', 'emoji': '⚠️', 'detail': 'Dos alelos A (~1.4x riesgo relativo). No equivale a mutaciones monogénicas de alta penetrancia; el control del peso y evitar el alcohol son altamente protectores.'},
+        },
+        'fun_fact': 'El ejercicio físico regular y mantener una masa grasa saludable reducen los niveles circulantes de estrógenos libres, protegiendo activamente el tejido mamario. 🌸'
+    },
+
+    'rs11571833': {
+        'rsid': 'rs11571833',
+        'gene': 'BRCA2',
+        'category': 'Salud',
+        'subcategory': 'Oncología hereditaria',
+        'title': 'Variante de susceptibilidad moderada BRCA2 (K3326X)',
+        'description': (
+            'Polimorfismo específico en el extremo carboxi-terminal del gen BRCA2 (c.9976A>T, p.Lys3326Ter). '
+            'A diferencia de las mutaciones patogénicas de rotura de marco de lectura, el alelo T confiere un riesgo poligénico moderado (baja penetrancia) '
+            'evaluado habitualmente en microarrays de genotipado.'
+        ),
+        'interpretations': {
+            'AA': {'result': 'Genotipo normal / No portador de K3326X', 'emoji': '🛡️', 'detail': 'No portas la variante truncada K3326X en BRCA2. Riesgo basal promedio de la población general.'},
+            'AT': {'result': 'Portador de variante K3326X (Riesgo moderado)', 'emoji': '⚠️', 'detail': 'Un alelo T. Asociado a un modesto incremento del riesgo relativo de neoplasias dependientes de reparación de ADN. Se sugiere comentar antecedentes familiares con el médico.'},
+            'TT': {'result': 'Homocigoto K3326X (Muy infrecuente)', 'emoji': '⚠️', 'detail': 'Genotipo muy poco habitual. Recomendable asesoramiento genético formal con oncólogo médico o genetista.'},
+        },
+        'fun_fact': 'Los genes BRCA1 y BRCA2 protegen nuestro genoma reparando diariamente cientos de roturas de doble cadena de ADN en hombres y mujeres. 🧬'
+    },
+
+    'rs9642880': {
+        'rsid': 'rs9642880',
+        'gene': 'MYC / 8q24',
+        'category': 'Salud',
+        'subcategory': 'Oncología vesical',
+        'title': 'Susceptibilidad neoplásica vesical (Locus 8q24)',
+        'description': (
+            'Variante identificada por el consorcio internacional GWAS para susceptibilidad a neoplasia de vejiga. '
+            'El alelo T incrementa el riesgo relativo en el urotelio, especialmente ante la presencia de toxinas irritantes como el humo del tabaco.'
+        ),
+        'interpretations': {
+            'GG': {'result': 'Riesgo basal en epitelio urotelial', 'emoji': '✅', 'detail': 'Sin alelos de susceptibilidad aumentada en este locus. Riesgo basal de la población general.'},
+            'GT': {'result': 'Riesgo relativo moderado vesical', 'emoji': '⚖️', 'detail': 'Un alelo T. Evitar estrictamente el consumo de tabaco y la exposición a solventes químicos industriales elimina prácticamente el riesgo.'},
+            'TT': {'result': 'Susceptibilidad aumentada en urotelio vesical', 'emoji': '⚠️', 'detail': 'Dos alelos T. Mantener una hidratación generosa (2 litros de agua diarios) favorece el aclaramiento continuo de solutos de desecho en la orina.'},
+        },
+        'fun_fact': 'Beber abundante agua a lo largo del día reduce significativamente la concentración y el tiempo de permanencia de toxinas en contacto con la pared de la vejiga. 💧'
+    },
+
+    'rs1805008': {
+        'rsid': 'rs1805008',
+        'gene': 'MC1R',
+        'category': 'Salud',
+        'subcategory': 'Oncología cutánea y melanoma',
+        'title': 'Receptor de melanocortina y fotoprotección (MC1R Arg151Cys)',
+        'description': (
+            'La variante Arg151Cys (alelo T) en el gen MC1R altera la síntesis de eumelanina (el pigmento oscuro fotoprotector) '
+            'a favor de feomelanina (pigmento amarillo-rojizo generador de radicales libres bajo luz solar). '
+            'Es un factor genético clave en la susceptibilidad al melanoma y fotoenvejecimiento.'
+        ),
+        'interpretations': {
+            'CC': {'result': 'Receptor MC1R plenamente funcional', 'emoji': '🛡️', 'detail': 'Capacidad óptima de síntesis de eumelanina fotoprotectora. Riesgo basal de fotoenvejecimiento y melanoma.'},
+            'CT': {'result': 'Portador de variante Arg151Cys (Mayor fotosensibilidad)', 'emoji': '☀️', 'detail': 'Un alelo T. Mayor propensión a eritema solar (quemaduras) y pecas. Esencial usar fotoprotector solar FPS 50+ y gafas de sol homologadas.'},
+            'TT': {'result': 'Alta fotosensibilidad y susceptibilidad a melanoma', 'emoji': '⚠️', 'detail': 'Dos alelos T. Piel muy vulnerable al daño actínico UV. Se aconseja revisión dermatológica periódica de lunares (regla del ABCDE).'},
+        },
+        'fun_fact': 'La eumelanina no solo da color oscuro a la piel y cabello: actúa como un escudo biológico que absorbe el 99.9% de la radiación ultravioleta dañina. 🛡️'
+    },
+
+    'rs1805009': {
+        'rsid': 'rs1805009',
+        'gene': 'MC1R',
+        'category': 'Salud',
+        'subcategory': 'Oncología cutánea y melanoma',
+        'title': 'Susceptibilidad a daño UV y melanoma (MC1R Arg160Trp)',
+        'description': (
+            'Variante Arg160Trp (alelo A) en el gen MC1R. Al igual que Arg151Cys, reduce la eficacia de señalización del receptor, '
+            'disminuyendo la capacidad natural de la piel para broncearse y aumentando el riesgo de daño oxidativo por radiación solar.'
+        ),
+        'interpretations': {
+            'GG': {'result': 'Señalización normal de MC1R / Riesgo basal', 'emoji': '✅', 'detail': 'Respuesta normal de bronceado y protección celular basal frente a la radiación ultravioleta.'},
+            'AG': {'result': 'Portador de variante Arg160Trp', 'emoji': '☀️', 'detail': 'Un alelo A. Ligera disminución en la capacidad de bronceado protector. Evitar la exposición solar en horas pico (12:00 a 16:00).'},
+            'AA': {'result': 'Sensibilidad elevada a radiación ultravioleta', 'emoji': '⚠️', 'detail': 'Dos alelos A. Mayor susceptibilidad a quemaduras solares y lesiones actínicas. Priorizar ropa protectora y crema solar.'},
+        },
+        'fun_fact': 'El 80% del daño solar en la piel se acumula de forma silenciosa e irreversible antes de los 30 años de edad. ¡La fotoprotección es la mejor crema antiedad!'
+    },
+
+    'rs16969968': {
+        'rsid': 'rs16969968',
+        'gene': 'CHRNA5',
+        'category': 'Salud',
+        'subcategory': 'Oncología pulmonar y nicotina',
+        'title': 'Receptor nicotínico de acetilcolina y salud pulmonar (CHRNA5 D398N)',
+        'description': (
+            'La variante D398N (alelo A) en CHRNA5 altera la respuesta de los receptores nicotínicos en las neuronas del área tegmental ventral. '
+            'En fumadores, predispone a una inhalación más profunda del humo y mayor dosis de carcinógenos acumulados, '
+            'duplicando el riesgo de carcinoma pulmonar respecto a no portadores.'
+        ),
+        'interpretations': {
+            'GG': {'result': 'Menor dependencia nicotínica / Riesgo basal', 'emoji': '🫁', 'detail': 'Dos alelos G. Sin variantes de alta dependencia. En personas no fumadoras, el riesgo de cáncer pulmonar es prácticamente inexistente.'},
+            'AG': {'result': 'Susceptibilidad intermedia a nicotina', 'emoji': '⚖️', 'detail': 'Un alelo A. Mayor facilidad para desarrollar hábito tabáquico intenso. Si fumas, el abandono del tabaco es prioritario.'},
+            'AA': {'result': 'Alta dependencia biológica al tabaco y riesgo pulmonar', 'emoji': '⚠️', 'detail': 'Dos copias del alelo A. Mayor avidez física por la nicotina. Los tratamientos farmacológicos médicos de deshabituación son especialmente útiles.'},
+        },
+        'fun_fact': 'Tras solo 1 año de dejar de fumar, el riesgo de enfermedad coronaria cae a la mitad; tras 10 años, el riesgo de cáncer de pulmón se reduce a la mitad respecto a un fumador activo. 🫁'
+    },
+
+    'rs4072037': {
+        'rsid': 'rs4072037',
+        'gene': 'MUC1',
+        'category': 'Salud',
+        'subcategory': 'Oncología gastrointestinal',
+        'title': 'Barrera mucosa protectora gastrointestinal (MUC1)',
+        'description': (
+            'El gen MUC1 codifica la mucina 1, una glicoproteína que forma la primera línea de defensa física de la mucosa del estómago y colon. '
+            'El alelo C favorece un empalme alternativo más eficiente del ARN, confiriendo una barrera protectora superior frente a agresiones ácidas e infecciosas.'
+        ),
+        'interpretations': {
+            'CC': {'result': 'Barrera mucosa gastrointestinal eficiente (Protector)', 'emoji': '🛡️', 'detail': 'Dos alelos C protectores. Menor susceptibilidad a inflamación crónica gástrica y neoplasias del tracto digestivo superior.'},
+            'TC': {'result': 'Protección mucosa intermedia (MUC1)', 'emoji': '⚖️', 'detail': 'Un alelo C protector y un alelo T basal. Mantener hábitos digestivos saludables.'},
+            'TT': {'result': 'Barrera mucosa estándar / Susceptibilidad habitual', 'emoji': '🔬', 'detail': 'Genotipo estándar. Evitar comidas excesivamente saladas, ahumadas o irritantes gástricos.'},
+        },
+        'fun_fact': 'La capa de moco gástrico producida por las mucinas se renueva continuamente y es capaz de resistir un medio ácido tan potente como el ácido clorhídrico estomacal (pH 1.5). 🧪'
+    },
+
 }
 
 

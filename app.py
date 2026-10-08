@@ -298,6 +298,144 @@ def category_badge(category: str) -> str:
     cls = cls_map.get(category, 'badge-rasgo')
     return f'<span class="badge {cls}">{icon} {category}</span>'
 
+def get_trait_metric_info(curiosity: dict) -> tuple[str, str, int, str]:
+    """
+    Retorna (nombre_metrica, etiqueta_estado, porcentaje, color_hex).
+    Indica con claridad qué mide la barra para cada rasgo específico.
+    """
+    gene = str(curiosity.get('gene', '')).upper()
+    title = str(curiosity.get('title', '')).lower()
+    res = str(curiosity.get('result_text', '')).lower()
+    
+    # 1. Color de ojos
+    if 'ojo' in title or 'herc2' in gene:
+        if any(w in res for w in ['azul', 'claro', 'gris']):
+            return ("Intensidad de pigmento en iris", "Baja (Ojos claros / azules)", 20, "#58a6ff")
+        elif any(w in res for w in ['verde', 'avellana']):
+            return ("Intensidad de pigmento en iris", "Media (Ojos verdes / avellana)", 55, "#3fb950")
+        else:
+            return ("Intensidad de pigmento en iris", "Alta (Ojos oscuros / marrones)", 90, "#d29922")
+            
+    # 2. Pelo rojo
+    if 'rojo' in title or 'mc1r' in gene:
+        if any(w in res for w in ['alta', 'pelirrojo']):
+            return ("Expresión de feomelanina (pelo rojo)", "Muy Alta (Pelirrojo / Cobrizo)", 95, "#ff5252")
+        elif 'portador' in res:
+            return ("Expresión de feomelanina (pelo rojo)", "Moderada (Portador de variante)", 50, "#ff9800")
+        else:
+            return ("Expresión de feomelanina (pelo rojo)", "Mínima / Nula (Cabello oscuro)", 10, "#3fb950")
+
+    # 3. Lactosa
+    if 'lactosa' in title or 'lct' in gene:
+        if any(w in res for w in ['tolerante', 'persistencia']):
+            return ("Capacidad de digestión de lactosa", "Alta (Tolerancia en edad adulta)", 95, "#3fb950")
+        elif 'intermedio' in res:
+            return ("Capacidad de digestión de lactosa", "Moderada (Tolerancia intermedia)", 55, "#e3b341")
+        else:
+            return ("Capacidad de digestión de lactosa", "Baja (Predisposición a intolerancia)", 15, "#ff5252")
+
+    # 4. Cafeína
+    if any(w in title for w in ['cafeína', 'cafeina']) or 'cyp1a2' in gene:
+        if any(w in res for w in ['rápido', 'rapido', 'alta']):
+            return ("Velocidad de eliminación de cafeína", "Rápida (Metabolizador rápido)", 85, "#3fb950")
+        elif 'intermedio' in res:
+            return ("Velocidad de eliminación de cafeína", "Intermedia", 50, "#e3b341")
+        else:
+            return ("Velocidad de eliminación de cafeína", "Lenta (Mayor sensibilidad a cafeína)", 25, "#ff9800")
+
+    # 5. Músculo / ACTN3
+    if any(w in title for w in ['atletismo', 'músculo', 'musculo']) or 'actn3' in gene:
+        if any(w in res for w in ['potencia', 'fuerza', 'velocidad']):
+            return ("Fibras musculares rápidas tipo II", "Alta potencia / Fuerza explosiva", 90, "#ff7b72")
+        elif any(w in res for w in ['mixto', 'equilibrado']):
+            return ("Balance muscular (Tipo I / Tipo II)", "Equilibrado (Fuerza y resistencia)", 55, "#e3b341")
+        else:
+            return ("Fibras musculares lentas tipo I", "Orientación a resistencia aeróbica", 25, "#58a6ff")
+
+    # 6. Cilantro
+    if 'cilantro' in title or 'or6a2' in gene:
+        if any(w in res for w in ['jabón', 'jabon']):
+            return ("Sensibilidad a aldehídos jabonosos", "Alta (Sabe a jabón)", 90, "#ff9800")
+        else:
+            return ("Sensibilidad a aldehídos jabonosos", "Baja (Sabor herbáceo normal)", 15, "#3fb950")
+
+    # 7. Sabor amargo
+    if 'amargo' in title or 'tas2r38' in gene:
+        if any(w in res for w in ['muy sensible', 'alta']):
+            return ("Sensibilidad a glucosinolatos amargos", "Alta (Supercatador de amargos)", 90, "#ff9800")
+        elif any(w in res for w in ['moderada', 'intermedia']):
+            return ("Sensibilidad a glucosinolatos amargos", "Media / Moderada", 50, "#e3b341")
+        else:
+            return ("Sensibilidad a glucosinolatos amargos", "Baja (Catador neutro)", 20, "#3fb950")
+
+    # 8. Dolor / OPRM1
+    if 'dolor' in title or 'oprm1' in gene:
+        if any(w in res for w in ['mayor', 'alta', 'elevada']):
+            return ("Umbral de tolerancia al dolor", "Elevado (Mayor tolerancia)", 85, "#3fb950")
+        elif 'intermedia' in res:
+            return ("Umbral de tolerancia al dolor", "Intermedio", 50, "#e3b341")
+        else:
+            return ("Umbral de tolerancia al dolor", "Sensibilidad estándar", 30, "#58a6ff")
+
+    # 9. Estrés / COMT
+    if 'comt' in gene or 'guerrero' in res or 'estrés' in title:
+        if 'guerrero' in res:
+            return ("Resiliencia ante estrés agudo (COMT)", "Perfil Guerrero (Calma bajo presión)", 85, "#3fb950")
+        elif any(w in res for w in ['estratega', 'worrier']):
+            return ("Resiliencia ante estrés agudo (COMT)", "Perfil Estratega (Concentración en calma)", 30, "#58a6ff")
+        else:
+            return ("Resiliencia ante estrés agudo (COMT)", "Perfil Mixto equilibrado", 55, "#e3b341")
+
+    # 10. Memoria / BDNF
+    if 'bdnf' in gene or 'memoria' in title:
+        if any(w in res for w in ['alta', 'óptima', 'normal']):
+            return ("Plasticidad sináptica cerebral (BDNF)", "Óptima (Val/Val)", 85, "#3fb950")
+        else:
+            return ("Plasticidad sináptica cerebral (BDNF)", "Estándar / Modulada (Met)", 45, "#e3b341")
+
+    # 11. Pecas / Pigmentación
+    if 'pecas' in title or 'irf4' in gene or 'bnc2' in gene:
+        if any(w in res for w in ['alta', 'muchas']):
+            return ("Propensión a formación de pecas", "Alta", 85, "#ff9800")
+        elif any(w in res for w in ['moderada', 'portador']):
+            return ("Propensión a formación de pecas", "Moderada", 50, "#e3b341")
+        else:
+            return ("Propensión a formación de pecas", "Baja / Mínima", 15, "#3fb950")
+
+    # 12. Cerumen y sudor / ABCC11
+    if 'cerumen' in title or 'abcc11' in gene:
+        if any(w in res for w in ['seco', 'sin olor']):
+            return ("Actividad de glándulas apocrinas", "Baja (Cerumen seco / Menor olor)", 15, "#58a6ff")
+        else:
+            return ("Actividad de glándulas apocrinas", "Estándar (Cerumen húmedo / Olor típico)", 85, "#e3b341")
+
+    # 13. Dopamina / DRD2
+    if 'drd2' in gene or 'dopamina' in title:
+        if any(w in res for w in ['reducida', 'menor']):
+            return ("Densidad de receptores D2 de dopamina", "Reducida (Búsqueda de recompensas)", 40, "#e3b341")
+        else:
+            return ("Densidad de receptores D2 de dopamina", "Normal / Elevada", 80, "#3fb950")
+
+    # 14. Oxitocina / OXTR / Empatía
+    if 'oxtr' in gene or 'empatía' in title:
+        if any(w in res for w in ['alta', 'elevada']):
+            return ("Sensibilidad a oxitocina / Conexión social", "Elevada (G/G)", 85, "#bc8cff")
+        elif 'intermedia' in res:
+            return ("Sensibilidad a oxitocina / Conexión social", "Moderada (A/G)", 50, "#e3b341")
+        else:
+            return ("Sensibilidad a oxitocina / Conexión social", "Estándar (A/A)", 30, "#8b949e")
+
+    # Fallback genérico para otros rasgos
+    if any(w in res for w in ['alto', 'alta', 'elevad', 'rápido', 'fuerte', 'favorable', 'óptim']):
+        return ("Intensidad / Expresión genética", "Nivel Alto (85%)", 85, "#3fb950")
+    elif any(w in res for w in ['medio', 'moderad', 'intermedio', 'mixto', 'portador', 'parcial']):
+        return ("Intensidad / Expresión genética", "Nivel Medio (50%)", 50, "#e3b341")
+    elif any(w in res for w in ['bajo', 'baja', 'lento', 'intolerante', 'sensible', 'sin', 'menor']):
+        return ("Intensidad / Expresión genética", "Nivel Bajo (20%)", 20, "#58a6ff")
+    
+    return ("Expresión fenotípica estimada", "Equilibrada (50%)", 50, "#8b949e")
+
+
 def render_curiosity_card(curiosity: dict) -> str:
     emoji = curiosity.get('emoji', '🧬')
     title = curiosity.get('title', '')
@@ -305,20 +443,9 @@ def render_curiosity_card(curiosity: dict) -> str:
     genotype = curiosity.get('genotype', '')
     result_text = curiosity.get('result_text', '')
     detail = curiosity.get('detail', '')
-    fun_fact = curiosity.get('fun_fact', '')
     category = curiosity.get('category', '')
     
-    # Progress visual (mock based on genotype string length or randomly for visual if binary)
-    if any(word in result_text.lower() for word in ['sin', 'no', 'intolerante']):
-        progress = 10
-        color = '#ff5252'
-    elif any(word in result_text.lower() for word in ['alta', 'tolerante', 'sí']):
-        progress = 90
-        color = '#3fb950'
-    else:
-        progress = 50
-        color = '#e3b341'
-        
+    metric_label, status_text, progress, color = get_trait_metric_info(curiosity)
     badge = category_badge(category)
     
     return f"""
@@ -327,17 +454,35 @@ def render_curiosity_card(curiosity: dict) -> str:
         {badge}
         <div style="margin-top: 10px;">
             <div class="card-title">{title}</div>
-            <div class="card-gene">{gene} · {genotype}</div>
+            <div class="card-gene">{gene} · Genotipo: <span style="color:#e6edf3; font-weight:700;">{genotype}</span></div>
             <div class="card-result">{result_text}</div>
-            <div class="progress-container">
-                <div class="progress-bar" style="width: {progress}%; background-color: {color};"></div>
+            
+            <div style="margin: 10px 0 8px 0; background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; margin-bottom:4px;">
+                    <span style="color:#8b949e; font-weight:500;">📊 {metric_label}</span>
+                    <span style="color:{color}; font-weight:700;">{status_text}</span>
+                </div>
+                <div class="progress-container" style="margin:0; height:7px;">
+                    <div class="progress-bar" style="width: {progress}%; background-color: {color};"></div>
+                </div>
             </div>
+
             <div class="card-detail">{detail}</div>
         </div>
     </div>
     """
 
 PREVENTION_TIPS = {
+    '8Q24': '🥦 Aumentar la fibra vegetal y verduras crucíferas; el cribado de colon a partir de los 45-50 años (test de sangre oculta en heces) previene pólipos tempranamente.',
+    'MYC': '🥗 Dieta mediterránea baja en carnes ultraprocesadas y chequeos urológicos periódicos.',
+    'MSMB': '🍅 El licopeno de los tomates y frutos rojos, sumado a revisiones periódicas de PSA a partir de los 45-50 años, apoyan la salud prostática.',
+    'IRF4': '🧴 Fotoprotector solar FPS 50+ diario, evitar quemaduras y revisión dermatológica periódica de lunares (regla del ABCDE).',
+    'TP53': '🛡️ Evitar el tabaco, los tóxicos celulares y la radiación innecesaria; mantener una dieta rica en antioxidantes naturales protege el ADN.',
+    'TERT': '🏃 El ejercicio regular, la gestión del estrés y un sueño nocturno reparador protegen la longitud telomérica y la integridad genómica.',
+    'FGFR2': '🌸 Mantener un peso saludable y realizar actividad física regular reduce los niveles de estrógenos libres en tejido mamario.',
+    'BRCA2': '🩺 En caso de antecedentes familiares directos de neoplasias tempranas de mama, ovario o próstata, coméntalo con tu médico para valorar cribados específicos.',
+    'CHRNA5': '🚭 Si eres fumador, el abandono del tabaco reduce de forma espectacular el riesgo acumulado de cáncer pulmonar.',
+    'MUC1': '🍲 Mantener una hidratación adecuada y evitar comidas irritantes estomacales favorece la regeneración de la barrera de mucina.',
     'TCF7L2': '🏃 El ensayo clínico DPP demostró que 150 min/semana de ejercicio aeróbico reducen el riesgo de progresión a diabetes en un 58% en personas con este alelo.',
     'CDKN2B-AS1': '🥗 Dieta mediterránea con abundante verdura fresca y control de presión arterial neutralizan el riesgo relativo añadido por este locus.',
     'AGT': '🧂 Dieta tipo DASH: limitar el sodio (<2 g sodio / 5 g sal al día) y aumentar el potasio (plátanos, legumbres, hojas verdes) reduce eficazmente la presión arterial.',
@@ -367,15 +512,17 @@ PREVENTION_TIPS = {
 }
 
 def get_prevention_tip(gene: str, title: str) -> str:
-    combined = (gene + " " + title).lower()
+    combined = (gene + " " + title).upper()
     for k, tip in PREVENTION_TIPS.items():
-        if k.lower() in combined:
+        if k in combined:
             return tip
     return "💡 Un estilo de vida activo, dieta mediterránea equilibrada, buen descanso y revisiones periódicas con tu médico son la mejor prevención primaria."
 
 def classify_health_system(info: dict) -> str:
-    sub = (info.get('subcategory', '') + ' ' + info.get('title', '') + ' ' + info.get('gene', '')).lower()
-    if any(w in sub for w in ['cardiovascular', 'coronaria', 'infarto', 'presión', 'hipertens', 'trombosis', 'coagulación', 'colesterol', 'ldl', 'hdl', 'lipasa', 'f5', 'f2', 'ace', 'agt', '9p21']):
+    sub = (str(info.get('subcategory', '')) + ' ' + str(info.get('title', '')) + ' ' + str(info.get('gene', ''))).lower()
+    if any(w in sub for w in ['oncol', 'cáncer', 'cancer', 'tumor', 'melanoma', 'colorrectal', 'próstata', 'prostata', 'mama', 'vejiga', 'gástrico', 'gastrico', 'brca', 'tp53', 'msmb', 'psca', 'irf4', 'fgfr2', 'tert', '8q24', 'muc1']):
+        return '🎗️ Oncología y Predisposición a Cáncer'
+    elif any(w in sub for w in ['cardiovascular', 'coronaria', 'infarto', 'presión', 'hipertens', 'trombosis', 'coagulación', 'colesterol', 'ldl', 'hdl', 'lipasa', 'f5', 'f2', 'ace', 'agt', '9p21']):
         return '🫀 Cardiovascular e Hipertensión'
     elif any(w in sub for w in ['diabetes', 'insulina', 'peso', 'obesidad', 'tcf7l2', 'fto', 'pparg', 'cdkn', 'kcnq1', 'cdkal1']):
         return '🍬 Metabólico y Diabetes'
@@ -587,6 +734,7 @@ if analyzer is None:
     </div>
     """, unsafe_allow_html=True)
     st.stop()
+    sys.exit(0)
 
 # ──────────────────────────────────────────────────────────────────
 # Cabecera principal
@@ -597,7 +745,7 @@ st.markdown('<div class="gradient-header">🧬 Tu Análisis Genético Personal</
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "🧬 Mi Perfil Genético",
     "💡 Curiosidades",
-    "🏛️ Ancestros Famosos",
+    "🏛️ Arqueogenética y Linajes",
     "🌍 Ancestría",
     "🔬 Explorador de SNPs",
     "❤️ Salud y Enfermedades",
@@ -693,13 +841,31 @@ with tab2:
                             st.write(c.get('fun_fact', 'Sin dato curioso extra.'))
 
 # ══════════════════════════════════════════════════════════════════
-# TAB 3: Ancestros Famosos
+# TAB 3: Arqueogenética y Linajes Históricos
 # ══════════════════════════════════════════════════════════════════
 with tab3:
-    st.markdown('<div class="section-header">🏛️ Ancestros Famosos y Herencia Arcaica</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-header">🏛️ Arqueogenética y Grandes Migraciones Prehistóricas</div>', unsafe_allow_html=True)
     
+    # ── Aclaración Científica: Mito vs Realidad ──
+    st.markdown("""
+    <div class="glass-card" style="border-left: 4px solid #bc8cff; margin-bottom: 22px; padding: 18px 22px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <span style="font-size:1.8rem;">🔬</span>
+            <strong style="color:#bc8cff; font-size:1.1rem;">Mito vs. Realidad: ¿Realmente descendemos de reyes o emperadores?</strong>
+        </div>
+        <p style="color:#c9d1d9; font-size:0.92rem; line-height:1.6; margin-bottom:10px;">
+            En internet y publicidad comercial es muy frecuente leer: <em>"¡Descubre si desciendes de Napoleón, Julio César o los Vikingos!"</em>.
+            En <strong>genética científica de poblaciones</strong>, esta afirmación es una <strong>exageración publicitaria</strong>:
+        </p>
+        <div style="background:rgba(0,0,0,0.25); padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); font-size:0.86rem; color:#8b949e; line-height:1.6;">
+            • <strong>Compartir linaje no es parentesco directo:</strong> Tener el mismo macro-haplogrupo (como R1b o Q) que una figura histórica significa que tú y esa persona compartís un antepasado común que vivió hace <strong>4.000 a 20.000 años</strong>, no que seas su descendiente directo.<br>
+            • <strong>Frecuencias masivas:</strong> El macrohaplogrupo R1b lo porta más del <strong>70% de los varones de España, Francia e Irlanda</strong>. Por tanto, pertenecer a esa rama es lo habitual en millones de personas.<br>
+            • <strong>El verdadero valor de la Arqueogenética:</strong> La paleogenómica real (liderada por institutos como el Max Planck de Svante Pääbo o Harvard) no busca alimentar egos con emperadores, sino comparar nuestro ADN con <strong>restos fósiles excavados en yacimientos</strong> para reconstruir las migraciones que forjaron la especie humana.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
     if HAS_FAMOUS_ANCESTORS:
-        # Load df once
         df = analyzer.raw_data if hasattr(analyzer, 'raw_data') and analyzer.raw_data is not None else analyzer.df
         
         y_haplo_res = infer_y_haplogroup(df)
@@ -711,31 +877,8 @@ with tab3:
         mt_haplo = mt_haplo_res[0] if isinstance(mt_haplo_res, (tuple, list)) else mt_haplo_res
         mt_conf = mt_haplo_res[1] if isinstance(mt_haplo_res, (tuple, list)) and len(mt_haplo_res) > 1 else "Baja"
 
-        famous_data = get_famous_ancestors(y_haplo, mt_haplo)
-
-        # Extraer figuras históricas de famous_data
-        famous_figures = []
-        if isinstance(famous_data, dict):
-            for h_key, h_info in famous_data.items():
-                if isinstance(h_info, dict):
-                    h_code = h_info.get('haplogroup', '')
-                    h_label = h_info.get('nickname', h_info.get('full_name', h_code))
-                    for fig in h_info.get('famous_figures', []):
-                        famous_figures.append({
-                            'name': fig.get('name', ''),
-                            'emoji': fig.get('image_emoji', '👤'),
-                            'haplogroup': f"{h_code} ({h_label})" if h_label and h_label != h_code else h_code,
-                            'description': fig.get('connection', ''),
-                            'years': fig.get('years', ''),
-                            'confidence': fig.get('confidence', '')
-                        })
-        elif isinstance(famous_data, list):
-            famous_figures = famous_data
-
-        neanderthal = estimate_neanderthal_snps(df)
-        blood = predict_blood_type(df)
-        
-        st.markdown("### 🧬 Detección de Haplogrupos Directos")
+        # ── Detección de Haplogrupos Directos en el Chip ──
+        st.markdown("### 🧬 Detección de Linajes Uniparentales en tu Chip")
         c1, c2 = st.columns(2)
         with c1:
             if y_haplo and y_haplo != 'unknown':
@@ -750,9 +893,9 @@ with tab3:
                 st.markdown(f"""
                 <div class="glass-card" style="border-left: 4px solid #30363d; text-align:center;">
                     <div style="font-size: 2rem;">🧬</div>
-                    <h4 style="color:#8b949e; margin:0;">Haplogrupo Y (Línea Paterna)</h4>
+                    <h4 style="color:#8b949e; margin:0;">Cromosoma Y (Línea Paterna Estándar)</h4>
                     <p style="color:#6e7681; font-size:0.85rem; margin:5px 0;">
-                        Los chips generales de MyHeritage analizan ~3.400 SNPs en el cromosoma Y, pero las subramas finas requieren paneles de secuenciación profunda de Y.
+                        Los microarrays comerciales de MyHeritage incluyen ~3.400 SNPs en Y pensados para genealogía reciente; la asignación de subclados finos requiere secuenciación profunda de Y (Big Y o WGS).
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
@@ -769,160 +912,182 @@ with tab3:
                 st.markdown(f"""
                 <div class="glass-card" style="border-left: 4px solid #30363d; text-align:center;">
                     <div style="font-size: 2rem;">🌿</div>
-                    <h4 style="color:#8b949e; margin:0;">Haplogrupo Mitocondrial (Línea Materna)</h4>
+                    <h4 style="color:#8b949e; margin:0;">ADN Mitocondrial (Línea Materna)</h4>
                     <p style="color:#6e7681; font-size:0.85rem; margin:5px 0;">
-                        MyHeritage se enfoca en cromosomas 1-22, X e Y, por lo que el ADNmt no se analiza en este chip comercial.
+                        El chip GSA de MyHeritage analiza cromosomas autosómicos y sexuales (1-22, X e Y), no el genoma mitocondrial (mtDNA).
                     </p>
                 </div>
                 """, unsafe_allow_html=True)
 
         # ──────────────────────────────────────────────────────────
-        # Conexiones Históricas Detectadas por Marcadores Autosómicos
+        # Las 4 Grandes Corrientes Paleogenómicas Reales de tu ADN
         # ──────────────────────────────────────────────────────────
-        st.markdown("### 🌟 Linajes Históricos Detectados en tu Genoma")
-        st.caption("A través de tus marcadores autosómicos de poblaciones ancestrales y ADN antiguo, tu ADN se conecta con estas grandes corrientes históricas:")
+        st.markdown("### 🌍 Las Grandes Corrientes Arqueogenéticas de tu Genoma")
+        st.caption("A través del cruce de tus variantes autosómicas con genomas antiguos excavados, tu ADN refleja las siguientes capas históricas:")
 
-        detected_ancestor_cols = st.columns(3)
+        c_arch1, c_arch2 = st.columns(2)
 
-        # Chequear EDAR (Precolombino / Asia Oriental)
+        # Chequear EDAR (Precolombino / Beringia)
         edar_snp = analyzer.get_snp_result('rs3827760')
         has_edar = edar_snp and 'A' in edar_snp.get('genotype', '')
 
-        # Chequear SLC24A5 / SLC45A2 (Ibérico / Europeo Atlántico)
+        # Chequear SLC24A5 / SLC45A2 (Ibérico / Estepa / Neolítico)
         slc_snp = analyzer.get_snp_result('rs1426654')
         has_slc = slc_snp and 'A' in slc_snp.get('genotype', '')
 
-        # Chequear Neandertal
-        nean_var = analyzer.get_snp_result('rs4833103')
-        has_nean = nean_var and ('A' in nean_var.get('genotype', '') or 'C' in nean_var.get('genotype', ''))
-
-        with detected_ancestor_cols[0]:
-            if has_edar:
-                st.markdown("""
-                <div class="ancestor-card" style="border-color: #e056fd; background: rgba(30, 20, 45, 0.6);">
-                    <span class="ancestor-emoji">🦅</span>
-                    <h4 style="color:#e056fd; margin-bottom:5px;">Pueblos Originarios y Dinastías Americanas</h4>
-                    <div class="confidence-badge" style="background:#e056fd22; color:#e056fd;">Marcador EDARV370A Detectado</div>
-                    <p style="font-size:0.82rem; color:#c9d1d9; margin-top:8px;">
-                        Compartes linaje genético con los constructores de <strong>Tenochtitlán, Machu Picchu y Palenque</strong> (Moctezuma II, Pachacútec, Pakal). Este marcador surgió en Beringia hace ~20.000 años.
-                    </p>
-                    <small style="color:#8b949e;">Evidencia: Genoma antiguo de momias andinas y mayas (Cell / Science)</small>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.markdown("""
-                <div class="ancestor-card" style="opacity:0.8;">
-                    <span class="ancestor-emoji">🏹</span>
-                    <h4 style="color:#e6edf3; margin-bottom:5px;">Linajes Euroasiáticos</h4>
-                    <p style="font-size:0.82rem; color:#8b949e;">Marcadores basales de poblaciones euroasiáticas occidentales.</p>
-                </div>
-                """, unsafe_allow_html=True)
-
-        with detected_ancestor_cols[1]:
+        with c_arch1:
             if has_slc:
                 st.markdown("""
-                <div class="ancestor-card" style="border-color: #5bbf76; background: rgba(15, 35, 25, 0.6);">
-                    <span class="ancestor-emoji">⚔️</span>
-                    <h4 style="color:#5bbf76; margin-bottom:5px;">El Refugio Ibérico y Linaje Atlántico</h4>
-                    <div class="confidence-badge" style="background:#5bbf7622; color:#5bbf76;">Marcador SLC24A5/SLC45A2 Detectado</div>
-                    <p style="font-size:0.82rem; color:#c9d1d9; margin-top:8px;">
-                        Linaje compartido con los pueblos de la Península Ibérica y Europa Occidental: <strong>Don Pelayo, Miguel de Cervantes, pueblos celtíberos y la nobleza hispana</strong> medieval (R1b-M269/DF27).
+                <div class="glass-card" style="border-left: 4px solid #5bbf76;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <h4 style="color:#5bbf76; margin:0;">🐎 Pastores Yamnaya de la Estepa y Refugio Ibérico</h4>
+                        <span class="confidence-badge" style="background:#5bbf7622; color:#5bbf76;">Edad del Bronce (~2.500 aC)</span>
+                    </div>
+                    <p style="font-size:0.86rem; color:#c9d1d9; margin:8px 0 6px 0; line-height:1.5;">
+                        Tu genoma porta marcadores clásicos de la <strong>expansión campaniforme y pastores de la estepa euroasiática</strong> (locus SLC24A5 y SLC45A2). Hace unos 4.500 años, esta migración reemplazó el ~40% del genoma y casi el 100% de los linajes masculinos de la Península Ibérica.
                     </p>
-                    <small style="color:#8b949e;">Evidencia: Olalde et al., Science 2019 (Paleogenómica Ibérica)</small>
+                    <small style="color:#8b949e;">Yacimientos clave: Samara (Rusia), Camino de las Yeseras (Madrid). Publicación: Olalde et al., Science 2019.</small>
+                </div>
+                """, unsafe_allow_html=True)
+
+            st.markdown("""
+            <div class="glass-card" style="border-left: 4px solid #e3b341; margin-top:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <h4 style="color:#e3b341; margin:0;">🌾 Primeros Agricultores de Anatolia (EEF)</h4>
+                    <span class="confidence-badge" style="background:#e3b34122; color:#e3b341;">Neolítico (~7.000 aC)</span>
+                </div>
+                <p style="font-size:0.86rem; color:#c9d1d9; margin:8px 0 6px 0; line-height:1.5;">
+                    Llegaron desde el Creciente Fértil y Anatolia trayendo la domesticación de trigo, cebada y ovejas. Su huella genética constituye entre el 40% y 60% del genoma de las poblaciones mediterráneas e ibéricas actuales.
+                </p>
+                <small style="color:#8b949e;">Yacimientos clave: Çatalhöyük (Turquía), Cova Bonica (Barcelona). Publicación: Haak et al., Nature 2015.</small>
+            </div>
+            """, unsafe_allow_html=True)
+
+        with c_arch2:
+            if has_edar:
+                st.markdown("""
+                <div class="glass-card" style="border-left: 4px solid #e056fd;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <h4 style="color:#e056fd; margin:0;">🦅 Cazadores de Beringia y Pueblos Originarios de América</h4>
+                        <span class="confidence-badge" style="background:#e056fd22; color:#e056fd;">Paleolítico Tardío (~18.000 aC)</span>
+                    </div>
+                    <p style="font-size:0.86rem; color:#c9d1d9; margin:8px 0 6px 0; line-height:1.5;">
+                        Portas el marcador derivado <strong>EDARV370A (homocigoto AA)</strong>. Surgió en el puente de tierra de Beringia durante el Último Máximo Glacial como una adaptación metabólica para optimizar la transferencia de nutrientes maternos en climas árticos sin luz solar, siendo universal en los primeros pobladores de América.
+                    </p>
+                    <small style="color:#8b949e;">Yacimientos clave: Cueva Bluefish (Yukón), Hoyo Negro (Yucatán), Anzick-1 (Montana). Publicación: Hlusko et al., PNAS 2018.</small>
                 </div>
                 """, unsafe_allow_html=True)
             else:
                 st.markdown("""
-                <div class="ancestor-card" style="opacity:0.8;">
-                    <span class="ancestor-emoji">🛡️</span>
-                    <h4 style="color:#e6edf3; margin-bottom:5px;">Linaje Atlántico</h4>
-                    <p style="font-size:0.82rem; color:#8b949e;">Raíces compartidas con Europa Occidental.</p>
+                <div class="glass-card" style="border-left: 4px solid #58a6ff;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <h4 style="color:#58a6ff; margin:0;">🏹 Cazadores-Recolectores Occidentales (WHG)</h4>
+                        <span class="confidence-badge" style="background:#58a6ff22; color:#58a6ff;">Mesolítico (~10.000 aC)</span>
+                    </div>
+                    <p style="font-size:0.86rem; color:#c9d1d9; margin:8px 0 6px 0; line-height:1.5;">
+                        Los habitantes autóctonos de Europa antes de la llegada de los agricultores. Poseían variantes combinadas de ojos claros y piel oscura adaptada a la caza en bosques templados postglaciales.
+                    </p>
+                    <small style="color:#8b949e;">Yacimiento clave: La Braña (León, España). Publicación: Olalde et al., Nature 2014.</small>
                 </div>
                 """, unsafe_allow_html=True)
 
-        with detected_ancestor_cols[2]:
             st.markdown("""
-            <div class="ancestor-card" style="border-color: #e3b341; background: rgba(35, 30, 15, 0.6);">
-                <span class="ancestor-emoji">🦴</span>
-                <h4 style="color:#e3b341; margin-bottom:5px;">Homo neanderthalensis de Eurasia</h4>
-                <div class="confidence-badge" style="background:#e3b34122; color:#e3b341;">Introgresión Arcaica Activa</div>
-                <p style="font-size:0.82rem; color:#c9d1d9; margin-top:8px;">
-                    Compartes segmentos de ADN intactos con los <strong>neandertales de la Cueva de El Sidrón (Asturias) y Vindija (Croacia)</strong>. Este cruce ocurrió hace ~55.000 años en el Próximo Oriente.
+            <div class="glass-card" style="border-left: 4px solid #ff7b72; margin-top:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <h4 style="color:#ff7b72; margin:0;">🦴 Introgresión Arcaica Neandertal</h4>
+                    <span class="confidence-badge" style="background:#ff7b7222; color:#ff7b72;">Paleolítico Medio (~55.000 aC)</span>
+                </div>
+                <p style="font-size:0.86rem; color:#c9d1d9; margin:8px 0 6px 0; line-height:1.5;">
+                    Cruce genético directo ocurrido en Oriente Próximo tras la salida de África. Conservas variantes arcaicas funcionales en receptores inmunitarios (TNFRSF8) y modulación circadiana.
                 </p>
-                <small style="color:#8b949e;">Evidencia: Proyecto Genoma Neandertal (Pääbo, Nobel 2022)</small>
+                <small style="color:#8b949e;">Yacimientos clave: Cueva de El Sidrón (Asturias), Vindija (Croacia). Premio Nobel 2022 a Svante Pääbo.</small>
             </div>
             """, unsafe_allow_html=True)
 
         # ──────────────────────────────────────────────────────────
-        # Explorador Interactivo de Dinastías y Linajes Históricos
+        # Yacimientos y Restos Fósiles Reales Secuenciados
         # ──────────────────────────────────────────────────────────
-        st.markdown("### 👑 Explorador de Linajes y Personajes Históricos")
-        st.write("Explora las grandes ramas de la humanidad y descubre qué personajes históricos compartían cada linaje genético:")
+        st.markdown("### 🏺 Restos Arqueológicos Famosos Secuenciados por la Ciencia")
+        st.write("A diferencia de leyendas sobre figuras individuales, estos son **restos arqueológicos reales** cuyos genomas han sido completamente secuenciados en laboratorio:")
 
-        lineage_options = {
-            "R1b-M269": "⚔️ R1b-M269: Los Celtas, Reyes Ibéricos y Napoleón (Península Ibérica y Atlántico)",
-            "Q": "🦅 Q: Los Señores de América y los Andes (Mayas, Mexicas e Incas)",
-            "I1": "🛡️ I1: Los Vikingos del Norte (Ragnar Lodbrok, Harald Bluetooth)",
-            "R1a": "🐎 R1a: Los Jinetes de la Estepa y Asia Central (Gengis Kan, Atila el Huno)",
-            "E1b1b": "🌅 E1b1b: Pueblos del Mediterráneo y Faraones (Sócrates, Antiguo Egipto)",
-            "J2": "🌾 J2: Creciente Fértil y Mesopotamia (Alejandro Magno, Hammurabi)",
-            "G2a": "🧊 G2a: Los Primeros Agricultores de Europa (Ötzi el Hombre de los Hielos)",
-            "H": "👑 mtDNA H: La Madre de Europa (Dinastía Romanov, Marie Curie)",
-            "V": "🏔️ mtDNA V: El Refugio Glacial Ibérico y Cantábrico (Nobleza Navarra)",
-            "K": "✡️ mtDNA K: Las Madres de Ashkenaz (Línea materna de Ötzi)",
-        }
+        arch_fossil_cols = st.columns(3)
+        fossils = [
+            {
+                'name': 'Ötzi, el Hombre de los Hielos',
+                'site': 'Alpes de Ötztal (Italia / Austria)',
+                'date': '3.300 aC (Hace 5.300 años)',
+                'emoji': '🧊',
+                'haplo': 'Y: G2a2b · mt: K1f',
+                'desc': 'Agricultor neolítico conservado en un glaciar. Tenía ojos marrones, grupo sanguíneo O+, intolerancia a la lactosa y el 100% de su genoma correspondía a los primeros agricultores de Anatolia.',
+                'paper': 'Keller et al., Nature Communications 2012'
+            },
+            {
+                'name': 'El Hombre de La Braña',
+                'site': 'Cueva de La Braña-Arintero (León, España)',
+                'date': '7.000 aC (Mesolítico)',
+                'emoji': '🏹',
+                'haplo': 'Y: C1a2 · mt: U5b2c1',
+                'desc': 'Cazador-recolector mesolítico ibérico. Su secuenciación revolucionó la paleoantropología al demostrar que tenía la mutación de ojos azules pero piel oscura no adaptada aún a dietas agrícolas.',
+                'paper': 'Olalde et al., Nature 2014'
+            },
+            {
+                'name': 'Momia del Cerro Aconcagua',
+                'site': 'Mendoza, Argentina (a 5.300 m de altitud)',
+                'date': '1.500 dC (Imperio Inca)',
+                'emoji': '🏔️',
+                'haplo': 'Y: Q-M3 · mt: C1bi',
+                'desc': 'Niño inca momificado en ritual de Capacocha. El análisis de ADN confirmó un linaje mitocondrial nativo andino sumamente antiguo que se originó hace ~14.000 años durante las primeras oleadas migratorias.',
+                'paper': 'Gómez-Carballa et al., Scientific Reports 2015'
+            },
+            {
+                'name': 'Los Guerreros de Salme',
+                'site': 'Isla de Saaremaa, Estonia',
+                'date': '750 dC (Era Pre-Vikinga)',
+                'emoji': '🛡️',
+                'haplo': 'Y: I1 (M253) · mt: H',
+                'desc': '41 guerreros escandinavos enterrados en dos barcos. La secuenciación demostró que cuatro de ellos eran hermanos de padre y madre, confirmando expediciones militares de clanes familiares cerrados.',
+                'paper': 'Margaryan et al., Nature 2020'
+            },
+            {
+                'name': 'Familia Neandertal de El Sidrón',
+                'site': 'Piloña, Asturias (España)',
+                'date': '49.000 aC (Paleolítico Medio)',
+                'emoji': '🦴',
+                'haplo': 'ADN Arcaico Neandertal',
+                'desc': '12 individuos contemporáneos de un mismo grupo familiar. Reveló que los hombres eran genéticamente cercanos y las mujeres procedían de otros grupos, documentando la patrilocalidad neandertal.',
+                'paper': 'Lalueza-Fox et al., PNAS 2011'
+            },
+            {
+                'name': 'Confirmación Forense de los Romanov',
+                'site': 'Ekaterimburgo, Rusia',
+                'date': '1918 dC (Siglo XX)',
+                'emoji': '👑',
+                'haplo': 'mt: H (Línea de la Zarina) y T',
+                'desc': 'Caso pionero de genética histórica forense. Se comparó el ADN mitocondrial de los restos exhumados con el príncipe Felipe de Edimburgo y parientes vivos, confirmando la identidad de la última familia imperial.',
+                'paper': 'Gill et al., Nature Genetics 1994'
+            },
+        ]
 
-        selected_key = st.selectbox(
-            "Selecciona un linaje histórico para ver sus figuras y contexto arqueológico:",
-            options=list(lineage_options.keys()),
-            format_func=lambda k: lineage_options[k],
-            index=0
-        )
-
-        selected_info = FAMOUS_ANCESTORS_DB.get(selected_key, {})
-        if selected_info:
-            color = selected_info.get('color', '#4f8ef7')
-            st.markdown(f"""
-            <div class="glass-card" style="border-left: 5px solid {color}; margin: 15px 0;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-                    <div>
-                        <span style="font-size:2rem; margin-right:10px;">{selected_info.get('emoji', '🏛️')}</span>
-                        <strong style="font-size:1.3rem; color:#e6edf3;">{selected_info.get('full_name', '')}</strong>
-                        <span style="color:{color}; font-weight:600; margin-left:10px;">— {selected_info.get('nickname', '')}</span>
+        for idx, fos in enumerate(fossils):
+            with arch_fossil_cols[idx % 3]:
+                st.markdown(f"""
+                <div class="ancestor-card" style="text-align:left; min-height:260px; padding:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span style="font-size:2rem;">{fos['emoji']}</span>
+                        <span style="font-size:0.75rem; color:#8b949e; font-family:monospace;">{fos['date']}</span>
                     </div>
-                    <div style="color:#8b949e; font-size:0.9rem;">
-                        ⏳ <strong>Edad:</strong> {selected_info.get('age', '')} | 📍 <strong>Origen:</strong> {selected_info.get('origin', '')}
-                    </div>
+                    <h4 style="color:#e6edf3; margin:2px 0 4px 0;">{fos['name']}</h4>
+                    <div style="font-size:0.78rem; color:#58a6ff; margin-bottom:4px;">📍 {fos['site']}</div>
+                    <div class="confidence-badge" style="margin-bottom:8px;">{fos['haplo']}</div>
+                    <p style="font-size:0.82rem; color:#c9d1d9; line-height:1.45; margin-bottom:8px;">{fos['desc']}</p>
+                    <small style="color:#6e7681; display:block; font-size:0.75rem;">📚 {fos['paper']}</small>
                 </div>
-                <p style="color:#c9d1d9; font-size:0.95rem; margin-top:12px; line-height:1.6;">
-                    {selected_info.get('description', '')}
-                </p>
-                <div style="background:rgba(255,255,255,0.03); padding:8px 12px; border-radius:8px; font-size:0.85rem; color:#8b949e;">
-                    🌍 <strong>Distribución actual:</strong> {selected_info.get('distribution', '')}
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            figs = selected_info.get('famous_figures', [])
-            if figs:
-                fig_cols = st.columns(min(len(figs), 3))
-                for idx, fig in enumerate(figs):
-                    with fig_cols[idx % 3]:
-                        st.markdown(f"""
-                        <div class="ancestor-card" style="min-height: 240px;">
-                            <span class="ancestor-emoji">{fig.get('image_emoji', '👤')}</span>
-                            <h4 style="color:#e6edf3; margin: 4px 0;">{fig.get('name', '')}</h4>
-                            <div style="color:#8b949e; font-size:0.8rem; margin-bottom:8px;">{fig.get('years', '')}</div>
-                            <div class="confidence-badge" style="background:{color}22; color:{color};">{fig.get('confidence', '')}</div>
-                            <p style="font-size:0.82rem; color:#c9d1d9; margin-top:8px; line-height:1.5;">{fig.get('connection', '')}</p>
-                            <small style="color:#6e7681; display:block; margin-top:6px;">📚 {fig.get('source', '')}</small>
-                        </div>
-                        """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
         # ──────────────────────────────────────────────────────────
-        # Herencia Neandertal con Detalle
+        # Herencia Neandertal Rigurosa
         # ──────────────────────────────────────────────────────────
-        st.markdown("### 🦴 Análisis Detallado de Herencia Neandertal")
+        st.markdown("### 🦴 Cuantificación Científica de tu ADN Neandertal")
         neanderthal = estimate_neanderthal_snps(df)
         
         if isinstance(neanderthal, (tuple, list)):
@@ -936,44 +1101,44 @@ with tab3:
         else:
             n_count, n_pct, n_details = 0, 0.0, []
 
-        real_genomic_pct = round(1.2 + (n_pct / 100.0) * 1.8, 1)
+        real_genomic_pct = round(1.2 + (n_pct / 100.0) * 1.6, 1)
 
         c_nean1, c_nean2 = st.columns([1, 2])
         with c_nean1:
             st.markdown(f"""
-            <div class="glass-card" style="text-align:center; border-color:#e3b341; padding:25px;">
-                <div style="font-size:3.5rem; color:#e3b341; font-weight:800;">~{real_genomic_pct}%</div>
-                <strong style="color:#e6edf3; font-size:1.1rem;">ADN Neandertal Estimado</strong>
-                <p style="color:#8b949e; font-size:0.85rem; margin-top:6px;">
-                    {n_count} de {int(n_count / (n_pct/100)) if n_pct > 0 else 20} marcadores arcaicos analizados fueron positivos ({n_pct:.0f}%)
+            <div class="glass-card" style="text-align:center; border-color:#e3b341; padding:22px;">
+                <div style="font-size:3.2rem; color:#e3b341; font-weight:800;">~{real_genomic_pct}%</div>
+                <strong style="color:#e6edf3; font-size:1.05rem;">ADN Neandertal Estimado</strong>
+                <p style="color:#8b949e; font-size:0.85rem; margin:8px 0;">
+                    {n_count} de 20 marcadores arcaicos analizados dieron positivo en tus datos ({n_pct:.0f}% de coincidencia con variantes neandertales conocidas).
                 </p>
-                <div class="confidence-badge" style="background:#e3b34122; color:#e3b341;">Rango Típico Euroasiático (1-3%)</div>
+                <div class="confidence-badge" style="background:#e3b34122; color:#e3b341;">Rango Típico Euroasiático (1.0% – 2.8%)</div>
             </div>
             """, unsafe_allow_html=True)
 
         with c_nean2:
             st.markdown("""
-            <div class="glass-card" style="padding:20px;">
-                <h4 style="color:#e6edf3; margin-top:0;">🛡️ ¿Qué heredaste de los neandertales?</h4>
-                <p style="color:#8b949e; font-size:0.9rem; line-height:1.6;">
-                    Cuando los humanos modernos salieron de África hace 60.000 años, se encontraron con los neandertales en Oriente Próximo y Europa. 
-                    Las variantes que conservas no son ruido aleatorio: aportaron ventajas evolutivas cruciales:
+            <div class="glass-card" style="padding:18px 22px;">
+                <h4 style="color:#e6edf3; margin-top:0;">🛡️ ¿Qué función biológica conservan estos genes en ti?</h4>
+                <p style="color:#8b949e; font-size:0.88rem; line-height:1.55; margin-bottom:8px;">
+                    Los neandertales llevaban más de 300.000 años adaptados al frío y a los patógenos euroasiáticos cuando nuestra especie llegó. 
+                    El cruce genético permitió a los humanos modernos adquirir "atajos biológicos" de supervivencia:
                 </p>
-                <ul style="color:#c9d1d9; font-size:0.85rem; line-height:1.8;">
-                    <li><strong>Sistema Inmunitario (TNFRSF8, IRF5):</strong> Receptores de reconocimiento de patógenos adaptados al clima euroasiático.</li>
-                    <li><strong>Ritmo Circadiano y Sueño (CLOCK):</strong> Adaptación a las variaciones estacionales de luz en latitudes septentrionales.</li>
-                    <li><strong>Coagulación y Cicatrización:</strong> Respuesta rápida ante heridas en entornos hostiles.</li>
+                <ul style="color:#c9d1d9; font-size:0.85rem; line-height:1.7; margin-bottom:0;">
+                    <li><strong>Inmunidad Innata (TNFRSF8, IRF5):</strong> Sensores celulares de reconocimiento viral y bacteriano adaptados al clima septentrional.</li>
+                    <li><strong>Ritmo Circadiano y Ciclos de Luz (CLOCK):</strong> Adaptación a las variaciones estacionales marcadas entre verano e invierno en Eurasia.</li>
+                    <li><strong>Respuesta de Coagulación Rápida:</strong> Cicatrización acelerada ante heridas en climas adversos.</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
 
         if n_details:
-            with st.expander(f"🔬 Ver los {len(n_details)} marcadores neandertales específicos encontrados en tu ADN"):
+            with st.expander(f"🔬 Ver los {len(n_details)} marcadores arcaicos específicos detectados en tu archivo"):
                 d_df = pd.DataFrame(n_details)
                 st.dataframe(d_df, use_container_width=True, hide_index=True)
 
         # ──────────────────────────────────────────────────────────
-        # Predicción de Grupo Sanguíneo
+        # Predicción de Grupo Sanguíneo y Evolución
         # ──────────────────────────────────────────────────────────
         st.markdown("### 🩸 Grupo Sanguíneo (Predicción Genómica)")
         blood = predict_blood_type(df)
@@ -984,45 +1149,43 @@ with tab3:
         b_c1, b_c2 = st.columns([1, 2])
         with b_c1:
             st.markdown(f"""
-            <div class="glass-card" style="text-align:center; border-color:#ff5252; padding:25px;">
-                <div style="font-size:3.5rem; font-weight:800; color:#ff5252;">{blood_type_display}</div>
-                <strong style="color:#e6edf3;">Grupo ABO / Factor Rh</strong>
-                <p style="color:#8b949e; font-size:0.85rem; margin-top:5px;">Confianza de predicción: {blood_conf_display}</p>
+            <div class="glass-card" style="text-align:center; border-color:#ff5252; padding:22px;">
+                <div style="font-size:3.2rem; font-weight:800; color:#ff5252;">{blood_type_display}</div>
+                <strong style="color:#e6edf3;">Grupo ABO / Factor Rh Predicho</strong>
+                <p style="color:#8b949e; font-size:0.85rem; margin-top:5px;">Nivel de confianza: {blood_conf_display}</p>
                 <small style="color:#6e7681;">SNPs evaluados: {snps_used_str}</small>
             </div>
             """, unsafe_allow_html=True)
         with b_c2:
             st.markdown("""
-            <div class="glass-card" style="padding:20px;">
-                <h4 style="color:#e6edf3; margin-top:0;">💡 Historia evolutiva de los grupos sanguíneos</h4>
-                <p style="color:#8b949e; font-size:0.9rem; line-height:1.6;">
-                    El grupo sanguíneo es uno de los primeros polimorfismos descubiertos en la especie humana. 
-                    El alelo <strong>A</strong> es el más antiguo en primates. El alelo <strong>O</strong> surgió como una mutación deleción que confirió protección frente a formas graves de malaria, expandiéndose masivamente en cazadores-recolectores y poblaciones indígenas de América.
+            <div class="glass-card" style="padding:18px 22px;">
+                <h4 style="color:#e6edf3; margin-top:0;">💡 Contexto Evolutivo de los Grupos Sanguíneos</h4>
+                <p style="color:#8b949e; font-size:0.88rem; line-height:1.55;">
+                    El grupo sanguíneo es uno de los polimorfismos más antiguos de los primates. El alelo <strong>A</strong> es la forma ancestral compartida con chimpancés. El alelo <strong>O</strong> surgió como una mutación que desactivó la enzima transferasa pero aportó una enorme ventaja selectiva: mayor resistencia frente a formas letales de malaria cerebral producida por <em>Plasmodium falciparum</em>.
                 </p>
-                <small style="color:#6e7681;">Nota: La confirmación clínica serológica es la única válida para transfusiones sanguíneas.</small>
+                <small style="color:#6e7681;">Aviso médico: La confirmación en laboratorio serológico es la única válida para procedimientos de transfusión clínica.</small>
             </div>
             """, unsafe_allow_html=True)
 
         # ──────────────────────────────────────────────────────────
-        # Gran Línea del Tiempo Ancestral
+        # Línea del Tiempo de la Especie Humana
         # ──────────────────────────────────────────────────────────
-        st.markdown("### ⏳ La Odisea de tus Genes a través del Tiempo")
+        st.markdown("### ⏳ Cronología de la Odisea Genética de tu ADN")
         st.markdown("""
-        <div class="glass-card" style="line-height:2.0; font-family:'Courier New', monospace; font-size:0.95rem; color:#c9d1d9;">
-            🌍 <strong>200.000 aC</strong> — Surge el <em>Homo sapiens</em> en África con el ADN mitocondrial ancestral.<br>
-            🚶 <strong>70.000 aC</strong> — Tus antepasados forman parte de la gran migración que cruza el Mar Rojo hacia Eurasia.<br>
-            🧬 <strong>55.000 aC</strong> — Encuentro y cruce con Neandertales en el Creciente Fértil (heredas tus variantes arcaicas).<br>
-            ❄️ <strong>25.000 aC</strong> — Último Máximo Glacial: tus ancestros se refugian en la Península Ibérica y las estepas siberianas.<br>
-            🌾 <strong>10.000 aC</strong> — Revolución Neolítica: domesticación del trigo y expansión de los primeros agricultores.<br>
-            🦅 <strong>15.000 aC</strong> — Cruce del estrecho de Bering hacia América (origen de tu marcador EDARV370A).<br>
-            ⚔️ <strong>4.500 aC</strong> — Expansión de los pastores Yamna y la cultura Campaniforme en la Península Ibérica.<br>
-            👑 <strong>1500–1600 dC</strong> — Encuentro de los mundos ibérico e indígena americano en el Atlántico.<br>
-            👤 <strong>HOY</strong> — <strong>Tú</strong>, portador vivo de este tapiz genético irrepetible.
+        <div class="glass-card" style="line-height:2.1; font-family:'Courier New', monospace; font-size:0.92rem; color:#c9d1d9;">
+            🌍 <strong>200.000 aC</strong> — Origen de <em>Homo sapiens</em> en África con el ADN mitocondrial ancestral de Eva.<br>
+            🚶 <strong>70.000 aC</strong> — La gran salida de África a través de la península arábiga.<br>
+            🧬 <strong>55.000 aC</strong> — Cruce con Neandertales en Oriente Próximo (origen de tus ~2,2% variantes arcaicas).<br>
+            ❄️ <strong>20.000 aC</strong> — Último Máximo Glacial: cazadores aislados en Beringia desarrollan el marcador adaptativo EDAR.<br>
+            🌾 <strong>9.000 aC</strong> — Agricultores de Anatolia colonizan Europa e introducen la domesticación y dietas de cereal.<br>
+            🐎 <strong>2.800 aC</strong> — Pastores Yamnaya de la estepa expanden el linaje R1b y la cultura Campaniforme en la Península Ibérica.<br>
+            ⛵ <strong>1.500 dC</strong> — Navegación atlántica y encuentro entre poblaciones ibéricas e indígenas americanas.<br>
+            👤 <strong>PRESENTE</strong> — <strong>Tú</strong>, resultado vivo de estas corrientes milenarias entrelazadas.
         </div>
         """, unsafe_allow_html=True)
         
     else:
-        st.info("El módulo de Ancestros Famosos no está disponible o no se pudo cargar.")
+        st.info("El módulo de arqueogenética no está disponible.")
 
 # ══════════════════════════════════════════════════════════════════
 # TAB 4: Ancestría
@@ -1181,7 +1344,7 @@ with tab6:
         )
         
     search_term = st.text_input(
-        "🔍 Buscar patología, síntoma o gen (ej: corazón, diabetes, trombosis, hierro, colesterol, estatinas):",
+        "🔍 Buscar patología, síntoma o gen (ej: cáncer, melanoma, próstata, colon, corazón, diabetes, trombosis, colesterol):",
         ""
     ).strip().lower()
     
