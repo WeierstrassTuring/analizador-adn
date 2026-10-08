@@ -44,8 +44,8 @@ Análisis de más de 80 SNPs conocidos, ancestros famosos, y curiosidades genét
 
 ```bash
 # 1. Clona el repositorio
-git clone https://github.com/TU_USUARIO/adn-personal.git
-cd adn-personal
+git clone https://github.com/WeierstrassTuring/analizador-adn.git
+cd analizador-adn
 
 # 2. (Recomendado) Crea un entorno virtual
 python -m venv venv
